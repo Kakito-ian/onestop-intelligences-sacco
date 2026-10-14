@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── OneStop brand tokens ──────────────────────────────────────────────────── */
+:root {
+  --green:       #1B5E3B;
+  --green-light: #2E7D52;
+  --green-dark:  #0D3D25;
+  --green-tint:  #E8F5EE;
+  --gold:        #F5B800;
+  --gold-tint:   #FFF8E1;
+  --gold-dark:   #7A5A00;
+  --ink:         #1A1A1A;
+  --muted:       #6B7280;
+  --line:        #E5E7EB;
+  --bg:          #F5F5F0;
+  --card:        #FFFFFF;
+}
+
+html { scroll-behavior: smooth; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }

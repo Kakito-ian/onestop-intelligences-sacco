@@ -1,0 +1,13 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none        # Flyway owns the schema — never let JPA touch it
+    show-sql: true
+  flyway:
+    enabled: true           # Run migrations in dev too — keep dev and prod in sync
+
+logging:
+  level:
+    ke.onestop.sacco: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE

@@ -1,0 +1,54 @@
+services:
+
+  # ── PostgreSQL ──────────────────────────────────────────────────────────────
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: onestop_sacco
+      POSTGRES_USER: ${DB_USERNAME:-onestop}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-onestop}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-onestop}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Backend (Spring Boot) ───────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      DB_URL: jdbc:postgresql://db:5432/onestop_sacco
+      DB_USERNAME: ${DB_USERNAME:-onestop}
+      DB_PASSWORD: ${DB_PASSWORD:-onestop}
+      JWT_SECRET: ${JWT_SECRET:-changeme}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3000}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # ── Frontend (Next.js) ──────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://backend:8080/api
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
